@@ -1,4 +1,4 @@
-package FirstFitStuff;
+
 
 public class Partition {
 	public int getBase() {

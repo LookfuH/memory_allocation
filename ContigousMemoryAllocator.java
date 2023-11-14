@@ -1,11 +1,10 @@
-package FirstFitStuff;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 public class ContigousMemoryAllocator {
 	private int size;    // maximum memory size in bytes (B)
@@ -148,12 +147,5 @@ public class ContigousMemoryAllocator {
 		
 		
 	}
-	public static void main(String[] args) {
-			
-			//use scanners to call methods. commands are help or h, stat, exit, rq
-			//Scanner sc = new Scanner(System.in);
-			
-			
-			
-		}
+	
 } 
