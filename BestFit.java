@@ -15,15 +15,15 @@ public class BestFit {
 		this.partList = new ArrayList<>();
 		this.partList.add(new Partition(0, size));
 
-        
-        //add processes (TODO: THIS IS TEMPORARY). 
+
+        //add processes (TODO: THIS IS TEMPORARY).
         add("first", 10);
-        add("second", 10); 
+        add("second", 10);
         add("thrid", 10);
 
         remove("second");
     }
-    
+
     public int add (String process, int size) {
         //TODO: add code below
 		if(allocMap.containsKey(process))
@@ -32,7 +32,7 @@ public class BestFit {
 		}
 		int index = 0;
 		int alloc = -1;
-		while (index < partList.size()) 
+		while (index < partList.size())
 		{
             // if (index >= partList.size()) {
             //     index = 0;
@@ -40,8 +40,8 @@ public class BestFit {
 
 			Partition part = partList.get(index);
 
-            
-			if (part.bFree && part.length >= size) 
+
+			if (part.bFree && part.length >= size)
 			{
 
                 //change to be Nxtfit
@@ -56,8 +56,8 @@ public class BestFit {
 					partList.remove(part);
 				alloc = size;
 				break;
-			
-				
+
+
 			}
 			index++;
 		}
@@ -70,52 +70,52 @@ public class BestFit {
 	}
 
     public int remove (String process) {
-        if(allocMap.containsKey(process)) return -1;
-		
+        if(!allocMap.containsKey(process)) { System.err.println("FAILED TO REMOVE :("); return -1;}
+
 		int size = -1;
 		for (Partition part : partList) {
 			if(!part.bFree && process.equals(part.process)) {
 				part.bFree = true;
-				part.process = null;
+				part.process = "Free Space";
 				size = part.length;
 				break;
-				
 			}
-		
 		}
 		if (size < 0) { print(); return size; }
-		
+
 		merge_holes();
-        print();
+		print();
+
 		return size;
     }
 
     private void merge_holes() {
-		//TODO: add code below
 		order_partitions();
 		int i = 0;
-		while(i < partList.size()) {
-			Partition part = partList.get(i);
-			
-			if(part.bFree) {
-				int endAddr = part.base + part.length-1;
-				int j = i + 1;
-				while (j < partList.size() && partList.get(j).bFree) {
-					int start_j = partList.get(j).base;
-					if( start_j == endAddr + 1) {
-						part.length = part.length + partList.get(j).length;
-						partList.remove(partList.get(j));
-					}
-					
+		ArrayList<Partition> removalQueue = new ArrayList<Partition>();
+		Partition freePart = null;
+		for (Partition part : partList) {
+			if (part.bFree) {
+				if (freePart != null) {
+					freePart.length += part.length;
+					removalQueue.add(part);
+				} else {
+					freePart = part;
 				}
+			} else {
+				freePart = null;
 			}
+		}
+
+		for (Partition remPart : removalQueue) {
+			partList.remove(remPart);
 		}
     }
 
     public void print() {
-        String print = " | ";
+        String print = "";
         for (Partition part : partList) {
-            print += part.toString() + " | ";
+            print += part.toString() + "\n";
         }
         System.out.println(print);
     }

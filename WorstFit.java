@@ -18,10 +18,14 @@ public class WorstFit{
         
         //add processes (TODO: THIS IS TEMPORARY). 
         add("first", 10);
-        add("second", 10); 
+		
+        add("second", 550); 
+		
         add("thrid", 10);
+		remove("second");
 
-        remove("second");
+		add("forth", 50);
+        
     }
     
     public int add (String process, int size) {
@@ -30,8 +34,15 @@ public class WorstFit{
 		{
 			return -1;
 		}
+
 		int index = 0;
-		int alloc = -1;
+		int alloc = -1; 
+		int max = isLargest();
+
+		if (max < size){
+			// TODO: cant fit into array so will put into a queue
+
+		}
 		while (index < partList.size()) 
 		{
             // if (index >= partList.size()) {
@@ -39,11 +50,11 @@ public class WorstFit{
             // }
 
 			Partition part = partList.get(index);
+			
 
-            
-			if (part.bFree && part.length >= size) 
+			if (part.bFree &&  part.length == max) 
 			{
-
+				//TODO find a way to make the base dynamic
                 //change to be Nxtfit
 				Partition allocPart = new Partition(part.base, size);
 				allocPart.bFree = false;
@@ -65,23 +76,34 @@ public class WorstFit{
 			return alloc;
     }
 
+	public int isLargest(){
+		int max = -1;
+		for (Partition part : partList){
+			if(part.bFree && part.length > max){
+				max = part.length;
+			}
+			
+		}
+		return max;
+	}
+
+
     private void order_partitions() {
 		Collections.sort(partList, (o1,o2) -> o1.base - o2.base);
 	}
 
-    public int remove (String process) {
-        if(allocMap.containsKey(process)) return -1;
+	public int remove (String process) {
+        if(!allocMap.containsKey(process)) { System.err.println("FAILED TO REMOVE :("); return -1;}
 		
 		int size = -1;
 		for (Partition part : partList) {
 			if(!part.bFree && process.equals(part.process)) {
 				part.bFree = true;
-				part.process = null;
+				part.process = "Free Space";
 				size = part.length;
+                print();
 				break;
-				
 			}
-		
 		}
 		if (size < 0) { print(); return size; }
 		
@@ -113,9 +135,9 @@ public class WorstFit{
     }
 
     public void print() {
-        String print = " | ";
+        String print = "";
         for (Partition part : partList) {
-            print += part.toString() + " | ";
+            print += part.toString() + " \n ";
         }
         System.out.println(print);
     }
