@@ -15,19 +15,19 @@ public class WorstFit{
 		this.partList = new ArrayList<>();
 		this.partList.add(new Partition(0, size));
 
-        
-        //add processes (TODO: THIS IS TEMPORARY). 
+
+        //add processes (TODO: THIS IS TEMPORARY).
         add("first", 10);
-		
-        add("second", 550); 
-		
+
+        add("second", 550);
+
         add("thrid", 10);
 		remove("second");
 
 		add("forth", 50);
-        
+
     }
-    
+
     public int add (String process, int size) {
         //TODO: add code below
 		if(allocMap.containsKey(process))
@@ -36,23 +36,23 @@ public class WorstFit{
 		}
 
 		int index = 0;
-		int alloc = -1; 
+		int alloc = -1;
 		int max = isLargest();
 
 		if (max < size){
 			// TODO: cant fit into array so will put into a queue
 
 		}
-		while (index < partList.size()) 
+		while (index < partList.size())
 		{
             // if (index >= partList.size()) {
             //     index = 0;
             // }
 
 			Partition part = partList.get(index);
-			
 
-			if (part.bFree &&  part.length == max) 
+
+			if (part.bFree &&  part.length == max)
 			{
 				//TODO find a way to make the base dynamic
                 //change to be Nxtfit
@@ -67,8 +67,8 @@ public class WorstFit{
 					partList.remove(part);
 				alloc = size;
 				break;
-			
-				
+
+
 			}
 			index++;
 		}
@@ -82,7 +82,7 @@ public class WorstFit{
 			if(part.bFree && part.length > max){
 				max = part.length;
 			}
-			
+
 		}
 		return max;
 	}
@@ -92,52 +92,53 @@ public class WorstFit{
 		Collections.sort(partList, (o1,o2) -> o1.base - o2.base);
 	}
 
-	public int remove (String process) {
+    public int remove (String process) {
         if(!allocMap.containsKey(process)) { System.err.println("FAILED TO REMOVE :("); return -1;}
-		
+
 		int size = -1;
 		for (Partition part : partList) {
 			if(!part.bFree && process.equals(part.process)) {
 				part.bFree = true;
 				part.process = "Free Space";
 				size = part.length;
-                print();
 				break;
 			}
 		}
 		if (size < 0) { print(); return size; }
-		
+
 		merge_holes();
-        print();
+		print();
+
 		return size;
     }
 
     private void merge_holes() {
-		//TODO: add code below
 		order_partitions();
 		int i = 0;
-		while(i < partList.size()) {
-			Partition part = partList.get(i);
-			
-			if(part.bFree) {
-				int endAddr = part.base + part.length-1;
-				int j = i + 1;
-				while (j < partList.size() && partList.get(j).bFree) {
-					int start_j = partList.get(j).base;
-					if( start_j == endAddr + 1) {
-						part.length = part.length + partList.get(j).length;
-						partList.remove(partList.get(j));
-					}
-					
+		ArrayList<Partition> removalQueue = new ArrayList<Partition>();
+		Partition freePart = null;
+		for (Partition part : partList) {
+			if (part.bFree) {
+				if (freePart != null) {
+					freePart.length += part.length;
+					removalQueue.add(part);
+				} else {
+					freePart = part;
 				}
+			} else {
+				freePart = null;
 			}
+		}
+
+		for (Partition remPart : removalQueue) {
+			partList.remove(remPart);
 		}
     }
 
     public void print() {
         String print = "";
         for (Partition part : partList) {
-            print += part.toString() + " \n ";
+            print += part.toString() + "\n";
         }
         System.out.println(print);
     }
