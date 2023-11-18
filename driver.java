@@ -20,7 +20,7 @@ public class driver {
             fit = new NextFit(maxSize);
         }
         else {
-            fit = new FirstFit(maxSize);
+           fit = new FirstFit(maxSize);
             System.out.println("Invaild input");
         }
         sc.close();

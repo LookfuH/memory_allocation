@@ -11,6 +11,7 @@ public class Partition {
 	public int length;       // partition size
 	public boolean bFree;    // status: free or allocated
 	public String process;   // assigned process if allocated
+	
 
 	// constructor method
 	public Partition(int base, int length) {

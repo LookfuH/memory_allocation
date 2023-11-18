@@ -18,10 +18,12 @@ public class NextFit {
         
         //add processes (TODO: THIS IS TEMPORARY). 
         add("first", 10);
-        add("second", 10); 
+		
+        add("second", 550); 
+		
         add("thrid", 10);
-
-        remove("second");
+		remove("second");
+		add("forth", 50);
     }
 
     int index = 0;
