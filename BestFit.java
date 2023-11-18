@@ -18,51 +18,50 @@ public class BestFit {
 
         //add processes (TODO: THIS IS TEMPORARY).
         add("first", 10);
-        add("second", 10);
-        add("thrid", 10);
+        add("second", 100);
+        add("thrid", 300);
+		add("fourth", 30);
+		add("fith", 30);
 
-        remove("second");
+		remove("second");
+		remove("fourth");
+
+		add("sith", 27);
     }
 
-    public int add (String process, int size) {
-        //TODO: add code below
-		if(allocMap.containsKey(process))
+    public int add(String process, int size) {
+		if (allocMap.containsKey(process))
 		{
 			return -1;
 		}
-		int index = 0;
-		int alloc = -1;
-		while (index < partList.size())
-		{
-            // if (index >= partList.size()) {
-            //     index = 0;
-            // }
 
-			Partition part = partList.get(index);
+		Partition targetPartition = null;
 
-
-			if (part.bFree && part.length >= size)
-			{
-
-                //change to be Nxtfit
-				Partition allocPart = new Partition(part.base, size);
-				allocPart.bFree = false;
-                allocPart.process = process;
-				partList.add(index, allocPart); //inserts allocated into index
-				allocMap.put(process, allocPart);
-				part.base = part.base + size;
-				part.length = part.length - size;
-				if(part.length == 0)
-					partList.remove(part);
-				alloc = size;
-				break;
-
-
+		for (Partition part : partList) {
+			if (part.bFree && part.length >= size && (targetPartition == null || targetPartition.length > part.length)) {
+				targetPartition = part;
 			}
-			index++;
 		}
-            print();
-			return alloc;
+
+		if (targetPartition == null) {
+			return -1;
+		}
+
+		int index = partList.indexOf(targetPartition);
+
+		Partition newPart = new Partition(targetPartition.base, size);
+		newPart.bFree = false;
+		newPart.process = process;
+		partList.add(index, newPart);
+		targetPartition.base += size;
+		targetPartition.length -= size;
+		allocMap.put(process, newPart);
+
+		if(targetPartition.length <= 0)
+			partList.remove(targetPartition);
+
+		print();
+		return size;
     }
 
     private void order_partitions() {
@@ -72,16 +71,10 @@ public class BestFit {
     public int remove (String process) {
         if(!allocMap.containsKey(process)) { System.err.println("FAILED TO REMOVE :("); return -1;}
 
-		int size = -1;
-		for (Partition part : partList) {
-			if(!part.bFree && process.equals(part.process)) {
-				part.bFree = true;
-				part.process = "Free Space";
-				size = part.length;
-				break;
-			}
-		}
-		if (size < 0) { print(); return size; }
+		Partition part = allocMap.get(process);
+		part.bFree = true;
+		part.process = "Free Space";
+		size = part.length;
 
 		merge_holes();
 		print();

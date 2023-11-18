@@ -73,19 +73,13 @@ public class NextFit {
 		Collections.sort(partList, (o1,o2) -> o1.base - o2.base);
 	}
 
-    public int remove (String process) {
+	public int remove (String process) {
         if(!allocMap.containsKey(process)) { System.err.println("FAILED TO REMOVE :("); return -1;}
 
-		int size = -1;
-		for (Partition part : partList) {
-			if(!part.bFree && process.equals(part.process)) {
-				part.bFree = true;
-				part.process = "Free Space";
-				size = part.length;
-				break;
-			}
-		}
-		if (size < 0) { print(); return size; }
+		Partition part = allocMap.get(process);
+		part.bFree = true;
+		part.process = "Free Space";
+		size = part.length;
 
 		merge_holes();
 		print();
