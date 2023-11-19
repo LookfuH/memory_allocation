@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class driver {
 
     static String filePath = "settings.config";
-
+    //parameters 
     static int partSize;// = 1024;
     static int maxProcessSize;// = 256;
     static int numProcesses;// = 10;
@@ -25,7 +25,7 @@ public class driver {
             System.err.println("File '" + filePath + "' does not exist. Please locate this file and try again." );
             System.exit(1);
         }
-
+        //Option select
         GenericFit fit = null;
         System.out.print("Options are: BF, WF, NF: ");
         Scanner sc = new Scanner(System.in);
@@ -49,7 +49,7 @@ public class driver {
         app.handleProcesses(list, fit);
 
     }
-
+    //filereader
     public static void readFile() throws FileNotFoundException {
         Scanner read = new Scanner(new File(filePath));
 
