@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 
-public class NextFit {
+public class NextFit implements GenericFit{
 
     private int size;    // maximum memory size in bytes (B)
 	private HashMap<String, Partition> allocMap;   // map process to partition
@@ -69,7 +69,7 @@ public class NextFit {
 			return alloc;
     }
 
-    private void order_partitions() {
+    public void order_partitions() {
 		Collections.sort(partList, (o1,o2) -> o1.base - o2.base);
 	}
 
@@ -87,9 +87,8 @@ public class NextFit {
 		return size;
     }
 
-    private void merge_holes() {
+    public void merge_holes() {
 		order_partitions();
-		int i = 0;
 		ArrayList<Partition> removalQueue = new ArrayList<Partition>();
 		Partition freePart = null;
 		for (Partition part : partList) {

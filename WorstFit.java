@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 //find biggest and add it there
-public class WorstFit{
+public class WorstFit implements GenericFit{
 
     private int size;    // maximum memory size in bytes (B)
 	private HashMap<String, Partition> allocMap;   // map process to partition
@@ -88,7 +88,7 @@ public class WorstFit{
 	}
 
 
-    private void order_partitions() {
+    public void order_partitions() {
 		Collections.sort(partList, (o1,o2) -> o1.base - o2.base);
 	}
 
@@ -106,7 +106,7 @@ public class WorstFit{
 		return size;
     }
 
-    private void merge_holes() {
+    public void merge_holes() {
 		order_partitions();
 		int i = 0;
 		ArrayList<Partition> removalQueue = new ArrayList<Partition>();
