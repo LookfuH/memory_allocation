@@ -17,14 +17,7 @@ public class WorstFit implements GenericFit{
 
 
         //add processes (TODO: THIS IS TEMPORARY).
-        add("first", 10);
-
-        add("second", 550);
-
-        add("thrid", 10);
-		remove("second");
-
-		add("forth", 50);
+    
 
     }
 
