@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -5,12 +10,21 @@ import java.util.Scanner;
 
 public class driver {
 
-        static int partSize = 1024; // TODO: Read from config
-        static int maxProcessSize = 100;
-        static int numProcesses = 10;
-        static int maxProcessTime = 1000;
+    static String filePath = "settings.config";
+
+    static int partSize;// = 1024;
+    static int maxProcessSize;// = 256;
+    static int numProcesses;// = 10;
+    static int maxProcessTime;// = 10000;
 
     public static void main(String[] args) {
+
+        try {
+           readFile();
+        } catch (FileNotFoundException e) {
+            System.err.println("File '" + filePath + "' does not exist. Please locate this file and try again." );
+            System.exit(1);
+        }
 
         GenericFit fit = null;
         System.out.print("Options are: BF, WF, NF: ");
@@ -33,6 +47,37 @@ public class driver {
         List<Object[]> list = generateProcesses();
         driver app = new driver();
         app.handleProcesses(list, fit);
+
+    }
+
+    public static void readFile() throws FileNotFoundException {
+        Scanner read = new Scanner(new File(filePath));
+
+        while (read.hasNextLine()) {
+            String[] line = read.nextLine().split("=");
+            String key = line[0].strip();
+            int value = Integer.parseInt(line[1].strip());
+
+            switch (key) {
+                case "MEMORY_MAX":
+                    partSize = value;
+                    break;
+                case "PROC_SIZE_MAX":
+                    maxProcessSize = value;
+                    break;
+                case "NUM_PROC":
+                    numProcesses = value;
+                    break;
+                case "MAX_PROC_TIME":
+                    maxProcessTime = value;
+                    break;
+                default:
+                    System.err.println("ERROR: Invalid key '" + key + "' in " + filePath);
+                    System.exit(1);
+                    break;
+            }
+        }
+
 
     }
 

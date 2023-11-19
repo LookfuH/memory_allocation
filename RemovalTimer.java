@@ -16,6 +16,6 @@ public class RemovalTimer implements Runnable{
         } catch (InterruptedException e) { e.printStackTrace(); }
 
         fit.remove(process);
-        notify();
+        notifyAll();
     }
 }

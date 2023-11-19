@@ -14,17 +14,6 @@ public class NextFit implements GenericFit{
 		this.allocMap = new HashMap<>();
 		this.partList = new ArrayList<>();
 		this.partList.add(new Partition(0, size));
-
-
-        //add processes (TODO: THIS IS TEMPORARY).
-        add("first", 10);
-
-        add("second", 550);
-
-        add("third", 10);
-		remove("second");
-		add("forth", 50);
-		remove("third");
     }
 
     int index = 0;
