@@ -14,11 +14,6 @@ public class WorstFit implements GenericFit{
 		this.allocMap = new HashMap<>();
 		this.partList = new ArrayList<>();
 		this.partList.add(new Partition(0, size));
-
-
-        //add processes (TODO: THIS IS TEMPORARY).
-
-
     }
 
     public synchronized int add (String process, int size) {
@@ -32,22 +27,16 @@ public class WorstFit implements GenericFit{
 		int alloc = -1;
 		int max = isLargest();
 
-		if (max < size){
-			// TODO: cant fit into array so will put into a queue
 
-		}
 		while (index < partList.size())
 		{
-            // if (index >= partList.size()) {
-            //     index = 0;
-            // }
 
 			Partition part = partList.get(index);
 
 
 			if (part.bFree &&  part.length == max)
 			{
-				//TODO find a way to make the base dynamic
+
                 //change to be Nxtfit
 				Partition allocPart = new Partition(part.base, size);
 				allocPart.bFree = false;
