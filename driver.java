@@ -1,17 +1,13 @@
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
 public class driver {
 
     static String filePath = "settings.config";
-    //parameters 
+    //parameters
     static int partSize;// = 1024;
     static int maxProcessSize;// = 256;
     static int numProcesses;// = 10;
@@ -91,20 +87,42 @@ public class driver {
     }
 
     public void handleProcesses(Process[] list, GenericFit fit) {
-
+        ArrayList<Thread> threadList = new ArrayList<Thread>();
+        double startTime = System.currentTimeMillis();
+        int delayedProcesses = 0;
+        int delayTime = 0;
         for (Process process : list) {
+            boolean delayed = false;
             while (fit.add(process.name, process.size) < 0) {
                 // timer.waitForRemoval();
                 try {
-                    Thread.sleep(10);
+                    delayTime++;
+                    delayed = true;
+                    Thread.sleep(1);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
+            delayedProcesses += delayed ? 1 : 0;
             Thread p = new Thread(process);
             p.start();
+            threadList.add(p);
         }
+
+        threadList.forEach((t) -> {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
+
+        System.out.println("\n-----RESULTS-----");
+        System.out.println("Time taken: " + (int)(System.currentTimeMillis() - startTime) + "ms");
+        System.out.println("Delayed Processes: " + delayedProcesses);
+        System.out.println("Total delayed time: " + delayTime + "ms");
     }
 }
 
@@ -158,4 +176,4 @@ public class driver {
 //                         ██▒▒██░░██▓▓          ████░░░░██░░▓▓
 //                         ██████░░██            ██░░██░░████
 //                               ██              ██████░░██
-//                                                     ██                '
+//                                                     ██
