@@ -44,7 +44,7 @@ public class driver {
         }
         sc.close();
 
-        List<Object[]> list = generateProcesses();
+        Process[] list = generateProcesses(fit);
         driver app = new driver();
         app.handleProcesses(list, fit);
 
@@ -81,27 +81,29 @@ public class driver {
 
     }
 
-    public static List<Object[]> generateProcesses() {
-        ArrayList<Object[]> list = new ArrayList<Object[]>();
+    public static Process[] generateProcesses(GenericFit fit) {
         Random rand = new Random();
+        Process[] list = new Process[numProcesses];
         for (int i = 0; i < numProcesses; i++) {
-            Object[] newProcess = {"P"+i, rand.nextInt(maxProcessSize), rand.nextInt(maxProcessTime)}; // Format: name, size, time
-            list.add(newProcess);
+            list[i] = new Process("P"+i, rand.nextInt(maxProcessSize), rand.nextInt(maxProcessTime), fit);
         }
-
         return list;
     }
 
-    synchronized void handleProcesses(List<Object[]> list, GenericFit fit) {
-        for ( Object[] process : list) {
-            while (fit.add((String)process[0], (int)process[1]) < 0) {
-                try {
-                    wait();
-                } catch (InterruptedException e) { e.printStackTrace(); }
-            };
+    public void handleProcesses(Process[] list, GenericFit fit) {
 
-            Thread t = new Thread(new RemovalTimer(fit, (String)process[0], (int)process[2]));
-            t.start();
+        for (Process process : list) {
+            while (fit.add(process.name, process.size) < 0) {
+                // timer.waitForRemoval();
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            Thread p = new Thread(process);
+            p.start();
         }
     }
 }

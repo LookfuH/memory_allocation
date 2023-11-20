@@ -17,11 +17,11 @@ public class WorstFit implements GenericFit{
 
 
         //add processes (TODO: THIS IS TEMPORARY).
-    
+
 
     }
 
-    public int add (String process, int size) {
+    public synchronized int add (String process, int size) {
         //TODO: add code below
 		if(allocMap.containsKey(process))
 		{
@@ -85,7 +85,7 @@ public class WorstFit implements GenericFit{
 		Collections.sort(partList, (o1,o2) -> o1.base - o2.base);
 	}
 
-	public int remove (String process) {
+	public synchronized int remove (String process) {
         if(!allocMap.containsKey(process)) { System.err.println("FAILED TO REMOVE :("); return -1;}
 
 		Partition part = allocMap.get(process);

@@ -18,7 +18,7 @@ public class NextFit implements GenericFit{
 
     int index = 0;
 
-    public int add (String process, int size) {
+    public synchronized int add (String process, int size) {
         //TODO: add code below
 		if(allocMap.containsKey(process))
 		{
@@ -26,6 +26,8 @@ public class NextFit implements GenericFit{
 		}
 		int startingIndex = index;
 		int alloc = -1;
+		index = index < partList.size() ? index : (partList.size() - 1);
+
 		do {
 
 			Partition part = partList.get(index);
@@ -50,19 +52,20 @@ public class NextFit implements GenericFit{
 
 			}
 			index++;
-            if (index >= partList.size()) {
-                 index = 0;
-             }
+			if (index >= partList.size()) {
+                	index = 0;
+			}
 		} while (index != startingIndex);
-            print();
-			return alloc;
+
+		if (alloc > 0) print();
+		return alloc;
     }
 
     public void order_partitions() {
 		Collections.sort(partList, (o1,o2) -> o1.base - o2.base);
 	}
 
-	public int remove (String process) {
+	public synchronized int remove (String process) {
         if(!allocMap.containsKey(process)) { System.err.println("FAILED TO REMOVE :("); return -1;}
 
 		Partition part = allocMap.get(process);

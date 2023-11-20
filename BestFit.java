@@ -16,7 +16,7 @@ public class BestFit implements GenericFit {
 		this.partList.add(new Partition(0, size));
     }
 
-    public int add(String process, int size) {
+    public synchronized int add(String process, int size) {
 		if (allocMap.containsKey(process))
 		{
 			return -1;
@@ -55,7 +55,7 @@ public class BestFit implements GenericFit {
 		Collections.sort(partList, (o1,o2) -> o1.base - o2.base);
 	}
 
-    public int remove (String process) {
+    public synchronized int remove (String process) {
         if(!allocMap.containsKey(process)) { System.err.println("FAILED TO REMOVE :("); return -1;}
 
 		Partition part = allocMap.get(process);
